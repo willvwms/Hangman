@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Westerosi Hangman</title>
+    <title>Hangman</title>
 </head>
 <body>
 
@@ -31,64 +31,64 @@
     // FUNCTIONS
     // ==============================================================================
 
-    // Select an item at random from the word list
-    function pickWord () {
-        return wordList[Math.floor((Math.random() * wordList.length) + 1)]
-    } // close pickWord function
+        // Select an item at random from the word list
+        function pickWord () {
+            return wordList[Math.floor((Math.random() * wordList.length) + 1)]
+        } // close pickWord function
 
-    // Create a string of symbols and spaces corresponding to the randomly selected word/phrase
-    function makeSymbolArray (secret) {
+        // Create a string of symbols and spaces corresponding to the randomly selected word/phrase
+        function makeSymbolArray (secret) {
+            
+            // Reset array to empty/blank:
+            symbolArray = [];
+
+            // Iterate through the secret word/phrase and append a symbol (or space) for each character onto the array 
+            for (i = 0; i < secret.length; i++) {
+                if (secret[i] === " ") 
+                {
+                    symbolArray.push(" ");
+                }
+                else 
+                {
+                    symbolArray.push(symbol)
+                }
+            } // close for loop
+
+            // Return the finished array of symbols and spaces
+            return symbolArray;
         
-        // Reset array to empty/blank:
-        symbolArray = [];
+        }  // close makeSymbolArray function    
 
-        // Iterate through the secret word/phrase and append a symbol (or space) for each character onto the array 
-        for (i = 0; i < secret.length; i++) {
-            if (secret[i] === " ") 
-            {
-                symbolArray.push(" ");
-            }
-            else 
-            {
-                symbolArray.push(symbol)
-            }
-        } // close for loop
+        // Create a string of symbols from the symbolArray
+        function makeSymbolString (symbolArray) {
+            
+            // Reset the symbolString
+            symbolString = "";
 
-        // Return the finished array of symbols and spaces
-        return makeSymbolArray;
-    
-    }  // close makeSymbolArray function    
+            // Iterate through array, concatenate the correponding string
+            for (i = 0; i < symbolArray.length; i++) {
+                symbolString += String(symbolArray[i])
+            } // close for loop
 
-    // Create a string of symbols from the symbolArray
-    function makeSymbolString (symbolArray) {
+            // Return the finished string of symbols and spaces
+            return symbolString;
         
-        // Reset the symbolString
-        symbolString = "";
+        }  // close makeSymbolString function
 
-        // Iterate through array, concatenate the correponding string
-        for (i = 0; i < symbolArray.length; i++) {
-            symbolString += String(symbolArray[i])
-        } // close for loop
+        // Reveal correct guesses by updating the symbolString
+        function revealLetters (letter) {
 
-        // Return the finished string of symbols and spaces
-        return symbolString;
-    
-    }  // close makeSymbolString function
+            // Compare the guessed letter against each character in the secret word; replace symbols if there's a match 
 
-    // Reveal correct guesses by updating the symbolString
-    function revealLetters (letter) {
-
-        // Compare the guessed letter against each character in the secret word; replace symbols if there's a match 
-
-        for (i = 0; i < secret.length; i++) 
-        {
-            if (letter === secret[x])
+            for (i = 0; i < secret.length; i++) 
             {
-                symbolArray[x] = secret[x]
+                if (letter === secret[x])
+                {
+                    symbolArray[x] = secret[x]
+                }
             }
-        }
 
-    } // close revealLetters function
+        } // close revealLetters function
 
     // MAIN PROCESS
     // ==============================================================================
@@ -98,15 +98,14 @@
     console.log("Secret: " + secret);
 
     // Duplicate secret word as a string of symbols in 2 steps:
-        // Step 1: Make array
-        symbolArray = makeSymbolArray(secret);
-        console.log("Symbol array:");
-        console.log(symbolArray);
+    // Step 1: Make array
+    symbolArray = makeSymbolArray(secret);
+    console.log("Symbol array:");
+    console.log(symbolArray);
 
-        // Step 2: Turn array into string
-        symbolString = makeSymbolString(symbolArray);
-        console.log("Symbol string:");
-        console.log(symbolString);
+    // Step 2: Turn array into string
+    symbolString = makeSymbolString(symbolArray);
+    console.log("Symbol string: " + symbolString);
 
     </script> 
 
