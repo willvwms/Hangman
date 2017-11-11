@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+
     <title>Hangman</title>
 </head>
 <body>
@@ -24,7 +32,7 @@
 
         let secret;
 
-        const symbol = "▢";
+        const symbol = "_ ";
         let symbolArray = [];
         let symbolString;
 
@@ -106,6 +114,9 @@
     // Step 2: Turn array into string
     symbolString = makeSymbolString(symbolArray);
     console.log("Symbol string: " + symbolString);
+
+    // Render symbolString to secret word div on screen
+    middle-target
 
     </script> 
 
