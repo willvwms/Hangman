@@ -5,120 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
+    <!--Import jQuery and Materialize.js-->
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
 
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-
-
+    
     <title>Hangman</title>
 </head>
 <body>
 
-    <div id="game-container">
 
-        <div id="top-graphics"></div>
-        <div id="middle-target"></div>
-        <div id="bottom-input"></div>
-        
-    </div> <!-- closes game container -->
+    <div class="row">
+        <div class="col s12 m6">
+
+        <!-- This following div, #round-data, contains 4 divs displaying round-specific data that will be hidden when the user declines to play another round -->
+        <div id="round-data"> 
+
+            <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">Round #:</span>
+              <span id="round-number"></span>
+            </div>
+<!--             <div class="card-action">
+              <a href="#">This is a link</a>
+              <a href="#">This is a link</a>
+            </div> -->
+          </div>      
+          
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">Word to Guess</span>
+              <span id="word-to-guess"></span>
+            </div>
+<!--             <div class="card-action">
+              <a href="#">This is a link</a>
+              <a href="#">This is a link</a>
+            </div> -->
+          </div>
+
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">Wrong Guesses</span>
+              <span id="wrong-guesses"></span>
+            </div>
+<!--             <div class="card-action">
+              <a href="#">This is a link</a>
+              <a href="#">This is a link</a>
+            </div> -->
+          </div>
+
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">Chances Left</span>
+              <span id="chances-left"></span>
+            </div>
+<!--             <div class="card-action">
+              <a href="#">This is a link</a>
+              <a href="#">This is a link</a>
+            </div> -->
+          </div>
+          
+        </div>  <!-- closes #round-data div -->
+
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">Win Count</span>
+              <span id="win-count"></span>
+            </div>
+<!--             <div class="card-action">
+              <a href="#">This is a link</a>
+              <a href="#">This is a link</a>
+            </div> -->
+          </div>
+
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">Loss Count</span>
+              <span id="loss-count"></span>
+            </div>
+<!--             <div class="card-action">
+              <a href="#">This is a link</a>
+              <a href="#">This is a link</a>
+            </div> -->
+          </div>
+
+        </div>
+
+    </div> <!-- closes 1st Materialize Grid row -->
+
+    <!-- Link to JavaScript -->
+    <script src="logic.js"></script> 
     
-    <script>
-    // VARIABLES
-    // ==========================================================================
-
-        const wordList = ["DIREWOLF", "GUEST  RIGHT", "HARRENHAL", "IRON  PRICE", "KHALEESI", "LORD  OF  LIGHT", "UNSULLIED", "WHITE  WALKERS", "THE  WALL", "KINGS  LANDING", "BRAAVOS", "DORNE", "WESTEROS", "WINTERFELL", "RIVERRUN", "RED  WEDDING", "HOUSE  TYRELL", "HOUSE  STARK", "HOUSE  LANNISTER", "HOUSE  GREYJOY", "HOUSE  FREY", "HOUSE  BOLTON", "HOUSE  BARATHEON", "HOUSE  ARRYN", "HOUSE  MARTELL", "HOUSE  TARGARYEN", "HOUSE  TULLY", "SEVEN  KINGDOMS", "FREE  CITIES", "IRONBORN", "DROWNED  GOD", "DRAGONSTONE ", "CASTERLY  ROCK", "HIGHGARDEN", "RED  KEEP", "STORMS  END", "THE  EYRIE", "STORMLANDS", "THE  REACH", "THE  WESTERLANDS", "THE  NORTH", "IRON  ISLANDS", "THE  VALE", "ESSOS", "KINGSLAYER", "WILDLING", "MAD  KING", "THE  SEVEN", "DOTHRAKI ", "GREENSIGHT", "THE  OTHERS", "GODSWOOD", "CASTLE  BLACK", "ARMY  OF  THE  DEAD", "UNBOWED  UNBENT  UNBROKEN", "WINTER  IS  COMING", "FIRE  AND  BLOOD", "MAESTER", "MILK  OF  THE  POPPY", "PYROMANCER", "WILDFIRE", "WILDLING", "THE  LONG  NIGHT", "OLDTOWN", "THE  CITADEL", "HIGHTOWER", "SEPTON"];
-
-        let secret;
-
-        const symbol = "_ ";
-        let symbolArray = [];
-        let symbolString;
-
-    // FUNCTIONS
-    // ==============================================================================
-
-        // Select an item at random from the word list
-        function pickWord () {
-            return wordList[Math.floor((Math.random() * wordList.length) + 1)]
-        } // close pickWord function
-
-        // Create a string of symbols and spaces corresponding to the randomly selected word/phrase
-        function makeSymbolArray (secret) {
-            
-            // Reset array to empty/blank:
-            symbolArray = [];
-
-            // Iterate through the secret word/phrase and append a symbol (or space) for each character onto the array 
-            for (i = 0; i < secret.length; i++) {
-                if (secret[i] === " ") 
-                {
-                    symbolArray.push(" ");
-                }
-                else 
-                {
-                    symbolArray.push(symbol)
-                }
-            } // close for loop
-
-            // Return the finished array of symbols and spaces
-            return symbolArray;
-        
-        }  // close makeSymbolArray function    
-
-        // Create a string of symbols from the symbolArray
-        function makeSymbolString (symbolArray) {
-            
-            // Reset the symbolString
-            symbolString = "";
-
-            // Iterate through array, concatenate the correponding string
-            for (i = 0; i < symbolArray.length; i++) {
-                symbolString += String(symbolArray[i])
-            } // close for loop
-
-            // Return the finished string of symbols and spaces
-            return symbolString;
-        
-        }  // close makeSymbolString function
-
-        // Reveal correct guesses by updating the symbolString
-        function revealLetters (letter) {
-
-            // Compare the guessed letter against each character in the secret word; replace symbols if there's a match 
-
-            for (i = 0; i < secret.length; i++) 
-            {
-                if (letter === secret[x])
-                {
-                    symbolArray[x] = secret[x]
-                }
-            }
-
-        } // close revealLetters function
-
-    // MAIN PROCESS
-    // ==============================================================================
-
-    // Set the secret word/phrase for this round and log it
-    secret = pickWord();
-    console.log("Secret: " + secret);
-
-    // Duplicate secret word as a string of symbols in 2 steps:
-    // Step 1: Make array
-    symbolArray = makeSymbolArray(secret);
-    console.log("Symbol array:");
-    console.log(symbolArray);
-
-    // Step 2: Turn array into string
-    symbolString = makeSymbolString(symbolArray);
-    console.log("Symbol string: " + symbolString);
-
-    // Render symbolString to secret word div on screen
-    middle-target
-
-    </script> 
-
 </body>
 </html>
