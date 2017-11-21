@@ -22,6 +22,9 @@ function Game () {
   this.roundNumber = 0; 
   this.winCount = 0;
   this.lossCount = 0;
+  this.winWords = []; // will store 2 pieces of info in objects; each object key/value pair = the word + how many wrong guesses
+    // e.g. [ {'house tyrell': '2'}, {'winter is coming': 5} ] 
+  this.lossWords = []; // will store just a series of the words the user didn't get in time
 
 // ----------------------------------------------------------------------------------------------
 // METHODS - functions to control game play 
@@ -87,8 +90,8 @@ function Game () {
         this.symbolString += String(array[i])
     } // close for loop
 
-    // test/debug
-    console.log(this.symbolString);
+    // // test/debug
+    // console.log(this.symbolString);
 
     this.renderStats();
 
@@ -125,16 +128,21 @@ function Game () {
   // Method that displays all current data/stats to users
   this.renderStats = function() {
     $("#round-number").html(this.roundNumber);    
-    $("#word-to-guess").html(this.symbolString);
-    // $("#word-to-guess").append(this.selectedWord);
+    $("#symbol-string").html(this.symbolString);
+    $("#word-to-guess").html(this.selectedWord);
     $("#wrong-guesses").html(this.wrongGuesses.join(" - "));
     $("#chances-left").html(this.guessesLeft);
     $("#win-count").html(this.winCount);
+    $("#win-words").empty();
+    this.winWords.forEach(renderWinWordsToScreen);
     $("#loss-count").html(this.lossCount);
+    $("#loss-words").empty();
+    this.lossWords.forEach(renderLossWordsToScreen);
+    renderHangmanImage(this.wrongGuesses.length);
   }; // close renderStats method 
 
   this.summarizeGame = function () {
-    $("#round-data").hide();
+    $("#round-data", "#picture-card").hide();
     var sucessRate = (parseFloat(this.winCount) / parseFloat(this.winCount + this.lossCount));
     console.log("Sucess rate = " + sucessRate);
     alert(`You won ${this.winCount} and lost ${this.lossCount}, so your success rate was only ${parseFloat(sucessRate * 100).toFixed(0)+"%"}. But you wouldn't have survived north of the Wall anyway, traitor.`);
@@ -148,6 +156,27 @@ function Game () {
   };
 
 }; // closes Game object definition
+
+// Some named functions to be called by (callbacks passed to) forEach / filter / map / reduce methods (use case: game stats)
+
+function renderLossWordsToScreen (element) {
+  $("#loss-words").append(element + "<br>");
+}
+
+function renderWinWordsToScreen (element) {
+  if ( element.tries === 1)
+  {
+    $("#win-words").append( ` ${element.wordWon} (Guessed it in ${element.tries} try) <br> `);
+  }
+  else
+  {
+    $("#win-words").append( ` ${element.wordWon} (Guessed it in ${element.tries} tries) <br> `);
+  }
+}
+
+function renderHangmanImage(number) {
+  $("#stage-image").attr( "src", `assets/hangman-images/${number}.jpg` );
+}
 
 // ----------------------------------------------------------------------------------------------
 // MAIN PROCESS 
@@ -191,11 +220,20 @@ document.onkeyup = function(event) {
           game.makeSymbolString(game.symbolArray);
           game.renderStats();
 
-          // If user has won:
+          // Test if symbolString is equal to selectedWord yet (i.e. USER WINS)
+          // If user WINS:
           if (game.symbolString === game.selectedWord)
           {
             // Record the win
             game.increaseWins();
+
+            // Add object to array of winWords
+            var wordWon = game.selectedWord;
+            console.log("wordWon: " + wordWon);
+            var tries = game.wrongGuesses.length;
+            console.log("tries: " + tries);
+            game.winWords.push( {"wordWon": wordWon ,"tries": tries  } )
+            game.winWords.forEach(function(element) {console.log("Word: "+ element.wordWon + ", Tries: "+ element.tries )})
 
             // Prompt user to play again, or not, and call appropriate function
             var replay = confirm("You win! Play again?");
@@ -217,12 +255,18 @@ document.onkeyup = function(event) {
           // Update HTML
           game.renderStats();
 
-          // Test if the user is out of chances to guess
+          // Test if the user is out of chances to guess (i.e. USER LOSES)
+          // If user LOSES
           if (!game.guessesLeft > 0) 
             {
               // Record the loss
               game.increaseLosses();
-              
+
+              // Add word to lossWords
+              var lostWord = game.selectedWord;
+              game.lossWords.push(lostWord);
+              game.lossWords.forEach(function(element) {console.log("Word lost: " + element)});
+
               // Prompt user to play again, or not, and call appropriate function
               var replay = confirm("Your watch has ended! \n Play again?");
                 if (replay) { game.startRound(); }

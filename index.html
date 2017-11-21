@@ -20,7 +20,6 @@
 </head>
 <body>
 
-
     <div class="row">
         <div class="col s12 m6">
 
@@ -38,6 +37,17 @@
             </div> -->
           </div>      
           
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">Symbol String</span>
+              <span id="symbol-string"></span>
+            </div>
+<!--             <div class="card-action">
+              <a href="#">This is a link</a>
+              <a href="#">This is a link</a>
+            </div> -->
+          </div>
+
           <div class="card blue-grey darken-1">
             <div class="card-content white-text">
               <span class="card-title">Word to Guess</span>
@@ -76,7 +86,9 @@
           <div class="card blue-grey darken-1">
             <div class="card-content white-text">
               <span class="card-title">Win Count</span>
-              <span id="win-count"></span>
+              <span id="win-count">0</span>
+              <span class="card-title">Win Words</span>
+              <span id="win-words">0</span>
             </div>
 <!--             <div class="card-action">
               <a href="#">This is a link</a>
@@ -88,6 +100,8 @@
             <div class="card-content white-text">
               <span class="card-title">Loss Count</span>
               <span id="loss-count"></span>
+              <span class="card-title">Loss Words:</span>              
+              <span id="loss-words"></span>
             </div>
 <!--             <div class="card-action">
               <a href="#">This is a link</a>
@@ -95,7 +109,24 @@
             </div> -->
           </div>
 
-        </div>
+        </div> <!-- closes the column that wraps the materialize cards -->
+
+        <div class="col s12 m6">  <!-- column contains hangman pictures -->
+
+          <div id="picture-card" class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">Pictoral progress of the game:</span>
+              <span class="card-title">Stage of loss:</span>              
+              <img id="stage-image" src="assets/hangman-images/0.jpg">
+            </div>
+<!--             <div class="card-action">
+              <a href="#">This is a link</a>
+              <a href="#">This is a link</a>
+            </div> -->
+          </div>
+
+        </div> <!-- closes the column that wraps the hangman pictures -->        
+
 
     </div> <!-- closes 1st Materialize Grid row -->
 
