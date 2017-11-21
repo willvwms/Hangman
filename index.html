@@ -21,111 +21,87 @@
 <body>
 
     <div class="row">
-        <div class="col s12 m6">
+        <div class="col s12 m6"> <!-- contains first column of materialize cards -->
 
-        <!-- This following div, #round-data, contains 4 divs displaying round-specific data that will be hidden when the user declines to play another round -->
-        <div id="round-data"> 
+          <!-- This following div, #round-data, contains 4 divs displaying round-specific data that will be hidden when the user declines to play another round -->
+          <div id="round-data"> 
 
-            <div class="card blue-grey darken-1">
-            <div class="card-content white-text">
-              <span class="card-title">Round #:</span>
-              <span id="round-number"></span>
+            <div class="card blue-grey darken-1">         <!-- round number -->
+              <div class="card-content white-text">
+                <span class="card-title">Round #:</span>
+                <span id="round-number"></span>
+              </div>
+            </div>      
+            
+            <div class="card blue-grey darken-1">         <!-- symbol string -->
+              <div class="card-content white-text">
+                <span class="card-title">Symbol String</span>
+                <span id="symbol-string"></span>
+              </div>
             </div>
-<!--             <div class="card-action">
-              <a href="#">This is a link</a>
-              <a href="#">This is a link</a>
-            </div> -->
-          </div>      
-          
-          <div class="card blue-grey darken-1">
-            <div class="card-content white-text">
-              <span class="card-title">Symbol String</span>
-              <span id="symbol-string"></span>
-            </div>
-<!--             <div class="card-action">
-              <a href="#">This is a link</a>
-              <a href="#">This is a link</a>
-            </div> -->
-          </div>
 
-          <div class="card blue-grey darken-1">
-            <div class="card-content white-text">
-              <span class="card-title">Word to Guess</span>
-              <span id="word-to-guess"></span>
+            <div class="card blue-grey darken-1">         <!-- word to guess -->
+              <div class="card-content white-text">
+                <span class="card-title">Word to Guess</span>
+                <span id="word-to-guess"></span>
+              </div>
             </div>
-<!--             <div class="card-action">
-              <a href="#">This is a link</a>
-              <a href="#">This is a link</a>
-            </div> -->
-          </div>
 
-          <div class="card blue-grey darken-1">
-            <div class="card-content white-text">
-              <span class="card-title">Wrong Guesses</span>
-              <span id="wrong-guesses"></span>
+            <div class="card blue-grey darken-1">         <!-- wrong guesses -->
+              <div class="card-content white-text">
+                <span class="card-title">Wrong Guesses</span>
+                <span id="wrong-guesses"></span>
+              </div>
             </div>
-<!--             <div class="card-action">
-              <a href="#">This is a link</a>
-              <a href="#">This is a link</a>
-            </div> -->
-          </div>
 
-          <div class="card blue-grey darken-1">
-            <div class="card-content white-text">
-              <span class="card-title">Chances Left</span>
-              <span id="chances-left"></span>
+            <div class="card blue-grey darken-1">         <!-- chances left -->
+              <div class="card-content white-text">
+                <span class="card-title">Chances Left</span>
+                <span id="chances-left"></span>
+              </div>
             </div>
-<!--             <div class="card-action">
-              <a href="#">This is a link</a>
-              <a href="#">This is a link</a>
-            </div> -->
-          </div>
-          
-        </div>  <!-- closes #round-data div -->
 
-          <div class="card blue-grey darken-1">
-            <div class="card-content white-text">
-              <span class="card-title">Win Count</span>
-              <span id="win-count">0</span>
-              <span class="card-title">Win Words</span>
-              <span id="win-words">0</span>
+            <div id="image-card" class="card blue-grey darken-1">         <!-- image card -->
+              <div class="card-content white-text">
+                <span class="card-title">Pictoral progress of the game:</span>
+                <span class="card-title">Stage of loss:</span>              
+                <img id="stage-image" src="assets/hangman-images/0.jpg">
+              </div>
             </div>
-<!--             <div class="card-action">
-              <a href="#">This is a link</a>
-              <a href="#">This is a link</a>
-            </div> -->
-          </div>
+            
+          </div>  <!-- closes #round-data div -->
 
-          <div class="card blue-grey darken-1">
-            <div class="card-content white-text">
-              <span class="card-title">Loss Count</span>
-              <span id="loss-count"></span>
-              <span class="card-title">Loss Words:</span>              
-              <span id="loss-words"></span>
+          <div id="summary-data">
+
+            <div class="card blue-grey darken-1">         <!-- summary: success rate and statistics message -->
+              <div class="card-content white-text">
+                <span class="card-title">Summary</span>
+                <span id="summary-message"></span>
+              </div>
             </div>
-<!--             <div class="card-action">
-              <a href="#">This is a link</a>
-              <a href="#">This is a link</a>
-            </div> -->
-          </div>
+
+            <div class="card blue-grey darken-1">         <!-- summary: wins (count, words, tries each) -->
+              <div class="card-content white-text">
+                <span class="card-title">Win Count</span>
+                <span id="win-count">0</span>
+                <span class="card-title">Win Words</span>
+                <span id="win-words"></span>
+              </div>
+            </div>
+
+            <div class="card blue-grey darken-1">         <!-- summary: losses (count, words) -->
+              <div class="card-content white-text">
+                <span class="card-title">Loss Count</span>
+                <span id="loss-count"></span>
+                <span class="card-title">Loss Words:</span>              
+                <span id="loss-words"></span>
+              </div>
+            </div>
+
+          </div>  <!-- closes #summary-data div -->
 
         </div> <!-- closes the column that wraps the materialize cards -->
 
-        <div class="col s12 m6">  <!-- column contains hangman pictures -->
-
-          <div id="picture-card" class="card blue-grey darken-1">
-            <div class="card-content white-text">
-              <span class="card-title">Pictoral progress of the game:</span>
-              <span class="card-title">Stage of loss:</span>              
-              <img id="stage-image" src="assets/hangman-images/0.jpg">
-            </div>
-<!--             <div class="card-action">
-              <a href="#">This is a link</a>
-              <a href="#">This is a link</a>
-            </div> -->
-          </div>
-
-        </div> <!-- closes the column that wraps the hangman pictures -->        
 
 
     </div> <!-- closes 1st Materialize Grid row -->

@@ -6,6 +6,7 @@ function Game () {
 
   // Constants to hold game data
   this.wordList = ["DIREWOLF", "GUEST  RIGHT", "HARRENHAL", "IRON  PRICE", "KHALEESI", "LORD  OF  LIGHT", "UNSULLIED", "WHITE  WALKERS", "THE  WALL", "KINGS  LANDING", "BRAAVOS", "DORNE", "WESTEROS", "WINTERFELL", "RIVERRUN", "RED  WEDDING", "HOUSE  TYRELL", "HOUSE  STARK", "HOUSE  LANNISTER", "HOUSE  GREYJOY", "HOUSE  FREY", "HOUSE  BOLTON", "HOUSE  BARATHEON", "HOUSE  ARRYN", "HOUSE  MARTELL", "HOUSE  TARGARYEN", "HOUSE  TULLY", "SEVEN  KINGDOMS", "FREE  CITIES", "IRONBORN", "DROWNED  GOD", "DRAGONSTONE ", "CASTERLY  ROCK", "HIGHGARDEN", "RED  KEEP", "STORMS  END", "THE  EYRIE", "STORMLANDS", "THE  REACH", "THE  WESTERLANDS", "THE  NORTH", "IRON  ISLANDS", "THE  VALE", "ESSOS", "KINGSLAYER", "WILDLING", "MAD  KING", "THE  SEVEN", "DOTHRAKI ", "GREENSIGHT", "THE  OTHERS", "GODSWOOD", "CASTLE  BLACK", "ARMY  OF  THE  DEAD", "UNBOWED  UNBENT  UNBROKEN", "WINTER  IS  COMING", "FIRE  AND  BLOOD", "MAESTER", "MILK  OF  THE  POPPY", "PYROMANCER", "WILDFIRE", "WILDLING", "THE  LONG  NIGHT", "OLDTOWN", "THE  CITADEL", "HIGHTOWER", "SEPTON"];
+  this.unusedIndices = []; // as words are selected from the wordList array, their index is removed from this list as a possible option for selection;
   this.symbol = "_ ";
   this.symbolArray = [];
   this.symbolString = "";
@@ -22,40 +23,117 @@ function Game () {
   this.roundNumber = 0; 
   this.winCount = 0;
   this.lossCount = 0;
+  this.allPossibleLetters = [];
   this.winWords = []; // will store 2 pieces of info in objects; each object key/value pair = the word + how many wrong guesses
     // e.g. [ {'house tyrell': '2'}, {'winter is coming': 5} ] 
   this.lossWords = []; // will store just a series of the words the user didn't get in time
-
+  this.allWrongGuesses = [];
+  // An array to track all the letters correctly guessed on rounds the user loses
+  this.allCorrectGuesses = [];
+  
 // ----------------------------------------------------------------------------------------------
 // METHODS - functions to control game play 
 // ----------------------------------------------------------------------------------------------
+
+// Methods for distilling all possible letters in each round for end-of-game statistics
+
+  // this.stripSpaces = function (value) {
+  //   return value !== " ";
+  //   // if (value !== " ") 
+  //   //   { return value }
+  // }
+
+  // this.onlyUnique = function (value, index, self) {
+  //   return self.indexOf(value) === index;
+  // }
+
+  this.filterLetters = function (wordOrPhrase) {
+
+    // console.log("Taken in by .filterLetters method: " + wordOrPhrase);
+
+    var filteredLetters = wordOrPhrase
+        // return new array of each character from the string
+        .split("")
+        // return new array with inner spaces removed
+        .filter(function(character){return character !== " "})
+        // return new array with duplicate letters removed
+        .filter(function(value,index,self){return index === self.indexOf(value);}); 
+        // console.log(filteredLetters);
+    
+    // Concatenate the filtered letter array to the allPossibleLetters property 
+        // console.log(this.allPossibleLetters);
+    var combinedArrays = this.allPossibleLetters.concat(filteredLetters) 
+        // console.log("Filtered letters variable: " + filteredLetters);
+    this.allPossibleLetters = combinedArrays;
+        // console.log("All tracked letters so far: " + this.allPossibleLetters);
+
+  } // close filterLetters method
+
+  // Method to update the list of available index positions still left int the word list for the remainder of a game
+  this.loadWordIndices = function (value, index) {
+    this.unusedIndices.push(index);
+  }
+
+  // Method to update/remove an index number (item) from the unusedIndices array when a word is randomly selected
+  this.removeWordIndex = function (number) {
+    // var usedIndexNumber = this.unusedIndices.indexOf(number); 
+    // this.unusedIndices.splice(usedIndexNumber, 1);
+    this.unusedIndices.splice(number, 1);
+    // console.log("REMOVED INDEX " + number);
+  }
+
+  this.selectWord = function () {
+    
+    // Check # of words left
+    console.log("No of indices left: " + this.unusedIndices.length);    
+    console.log("Remaining index numbers: " + this.unusedIndices);
+
+    //Generate a random number:
+    var randomNumber = Math.floor((Math.random() * this.unusedIndices.length) );
+    console.log("Randomly generated number: " + randomNumber);
+
+      // test if all the words have been used (in which case, game ends:)
+      if (!(this.unusedIndices.length)) 
+      {
+        this.concludeGame();
+        return;
+      }    
+
+    var wordIndex = this.unusedIndices[randomNumber];
+    console.log("NEW INDEX NO. TO BE PASSED: " + wordIndex);
+    console.log("----------------------------------");
+    // IMPORTANT: Here, secret word/phrase is assigned to object's SELECTED WORD property:
+    this.selectedWord = this.wordList[wordIndex];
+
+    // console.log("Selected word: " + this.selectedWord);
+    
+    // Remove number from list of unused indices to ensure it's not chosen again
+    var indexToRemove = this.unusedIndices.indexOf(wordIndex);
+    this.removeWordIndex(indexToRemove);
+
+  }; // close selectWord method  
 
   this.resetRoundData = function () {
     this.roundNumber++;
     this.guessesLeft = this.maxGuesses;
     this.lettersGuessed = [];
     this.wrongGuesses = [];
-    this.renderStats();
   } // close resetRoundData method 
 
   this.increaseRoundNumber = function () {
     this.roundNumber++;
-    this.renderStats();
   }; // close increaseRoundNumber method
 
   this.increaseLosses = function () {
     this.lossCount++;
-    this.renderStats();
   }; // close increaseLosses method
 
   this.increaseWins = function () {
     this.winCount++;
-    this.renderStats();
   }; // close increaseWins method
 
   this.decreaseGuessesLeft = function () {
     this.guessesLeft--;
-    this.renderStats();
   }; // close decreaseGuessesLeft method
 
   this.makeSymbolArray = function (word) {
@@ -76,7 +154,7 @@ function Game () {
     } // close for loop
 
     // test/debug
-    console.log(this.symbolArray);
+    // console.log(this.symbolArray);
 
   }; // close makeSymbolArray method
 
@@ -90,20 +168,7 @@ function Game () {
         this.symbolString += String(array[i])
     } // close for loop
 
-    // // test/debug
-    // console.log(this.symbolString);
-
-    this.renderStats();
-
   }; // close makeSymbolString method
-
-  this.selectWord = function () {
-    
-    // Randomly select the secret word/phrase 
-    this.selectedWord = this.wordList[Math.floor((Math.random() * this.wordList.length) + 1)];
-    console.log(this.selectedWord);
-
-  }; // close selectWord method
 
   this.revealLetters = function (letter) {
 
@@ -116,14 +181,17 @@ function Game () {
             this.symbolArray[i] = this.selectedWord[i]
         }
     }
-    this.renderStats();
   }; // close revealLetters method
 
   // Method that will track wrong guesses for display to user:
   this.recordWrongGuess = function(guess) {
     this.wrongGuesses.push(guess);
-    this.renderStats();
+    this.allWrongGuesses.push(guess);
   }; // close recordWrongGuess method
+
+  this.recordCorrectGuess = function(guess) {
+    this.allCorrectGuesses.push(guess);
+  }
 
   // Method that displays all current data/stats to users
   this.renderStats = function() {
@@ -138,14 +206,36 @@ function Game () {
     $("#loss-count").html(this.lossCount);
     $("#loss-words").empty();
     this.lossWords.forEach(renderLossWordsToScreen);
-    renderHangmanImage(this.wrongGuesses.length);
+    updateHangmanImage(this.wrongGuesses.length);
+    $("#summary-message").hide();
+    // $("#summary-data").hide();
   }; // close renderStats method 
 
   this.summarizeGame = function () {
-    $("#round-data", "#picture-card").hide();
-    var sucessRate = (parseFloat(this.winCount) / parseFloat(this.winCount + this.lossCount));
-    console.log("Sucess rate = " + sucessRate);
-    alert(`You won ${this.winCount} and lost ${this.lossCount}, so your success rate was only ${parseFloat(sucessRate * 100).toFixed(0)+"%"}. But you wouldn't have survived north of the Wall anyway, traitor.`);
+    $("#round-data").hide();
+    $("#image-card").hide();
+    var totalLetterCount = this.allPossibleLetters.length;
+    console.log("totalLetterCount: " + totalLetterCount);
+    var correctLetterCount = this.allCorrectGuesses.length;
+    console.log("correctLetterCount: " + correctLetterCount);
+    var maxGuesses = (this.roundNumber * 10);
+    console.log("maxGuesses: " + maxGuesses);
+    var allWrongGuesses = this.allWrongGuesses.length;
+    console.log("allWrongGuesses: " + allWrongGuesses);
+    var summaryMessage = 
+    `Out of ${totalLetterCount} possible letters across ${this.roundNumber} rounds, you got ${correctLetterCount} right (${ ( correctLetterCount / totalLetterCount ).toFixed(0) }% accuracy).
+    <br> 
+    <br> 
+    Out of ${maxGuesses} maximum guesses across ${this.roundNumber} rounds, you guessed ${allWrongGuesses} wrong letters (${ ( allWrongGuesses / maxGuesses ).toFixed(0) }% failure rate).
+    <br> 
+    <br> 
+    All in all, you won ${this.winWords.length} round(s) and lost ${this.lossWords.length}.`
+
+    // parseFloat(sucessRate * 100).toFixed(0)+"%"}.
+    console.log(summaryMessage);
+    $("#summary-message").empty();
+    $("#summary-message").append(summaryMessage);
+    $("#summary-message").show();
   };
 
   this.startRound = function () {
@@ -153,7 +243,13 @@ function Game () {
     this.selectWord();
     this.makeSymbolArray(this.selectedWord);
     this.makeSymbolString(this.symbolArray);
+    this.filterLetters(this.selectedWord);
   };
+
+  this.concludeGame = function () {
+    this.renderStats();
+    this.summarizeGame();
+  }
 
 }; // closes Game object definition
 
@@ -166,15 +262,17 @@ function renderLossWordsToScreen (element) {
 function renderWinWordsToScreen (element) {
   if ( element.tries === 1)
   {
-    $("#win-words").append( ` ${element.wordWon} (Guessed it in ${element.tries} try) <br> `);
+    $("#win-words").append( ` ${element.wordWon} (${element.tries} wrong guess) <br> `);
+    // console.log( ` ${element.wordWon} (${element.tries} wrong guess) <br> ` )
   }
   else
   {
-    $("#win-words").append( ` ${element.wordWon} (Guessed it in ${element.tries} tries) <br> `);
+    $("#win-words").append( ` ${element.wordWon} (${element.tries} wrong guesses) <br> `);
+    // console.log( ` ${element.wordWon} (${element.tries} wrong guesses) <br> ` )
   }
 }
 
-function renderHangmanImage(number) {
+function updateHangmanImage(number) {
   $("#stage-image").attr( "src", `assets/hangman-images/${number}.jpg` );
 }
 
@@ -185,14 +283,24 @@ function renderHangmanImage(number) {
 // Instantiate the Game object
 var game = new Game ();
 
+// Load word indices (make entire word list available)
+// NOTE: two arguments need to be passed to the forEach array method here:
+// 1st ARGUMENT: Callback function -- game.loadWordIndices -- define method of the Game prototype
+// and then, because the underlying method/function definition uses "this" keyword, 
+// a second argument ("thisArg") is required as a reference object (otherwise, the method's return value will be undefined)
+// 2nd ARGUMENT: "thisArg" -- game -- the specific instantiation of the Game prototype whose data needs to be changed
+
+game.wordList.forEach(game.loadWordIndices, game);
+
 // Start the first round:
 game.startRound();
+game.renderStats();
 
 // Event listener game loop:
 document.onkeyup = function(event) {
     // store user's input in variable 'letter', make it lower case for consistentcy, and log it:
     var letter = String.fromCharCode(event.keyCode).toUpperCase();
-    console.log(letter);
+    // console.log(letter);
 
     // Filter out non-alphabetic input
     if (game.actionableGuesses.indexOf(letter) < 0)
@@ -216,6 +324,7 @@ document.onkeyup = function(event) {
       // IF CORRECT
       if (game.selectedWord.indexOf(letter) > -1) 
       {
+          game.recordCorrectGuess(letter);
           game.revealLetters(letter);
           game.makeSymbolString(game.symbolArray);
           game.renderStats();
@@ -229,17 +338,25 @@ document.onkeyup = function(event) {
 
             // Add object to array of winWords
             var wordWon = game.selectedWord;
-            console.log("wordWon: " + wordWon);
+            // console.log("wordWon: " + wordWon);
             var tries = game.wrongGuesses.length;
-            console.log("tries: " + tries);
+            // console.log("tries: " + tries);
             game.winWords.push( {"wordWon": wordWon ,"tries": tries  } )
-            game.winWords.forEach(function(element) {console.log("Word: "+ element.wordWon + ", Tries: "+ element.tries )})
+            // game.winWords.forEach(function(element) {console.log("Word: "+ element.wordWon + ", Tries: "+ element.tries )})
+            game.renderStats();
 
             // Prompt user to play again, or not, and call appropriate function
             var replay = confirm("You win! Play again?");
               if (replay) 
-              { game.startRound(); }
-              else { game.summarizeGame(); }
+              { 
+                game.startRound();
+                game.renderStats(); 
+              }
+              else 
+              { 
+                game.renderStats();
+                game.summarizeGame(); 
+              }
           }
       } // close IF CORRECT block
 
@@ -266,11 +383,20 @@ document.onkeyup = function(event) {
               var lostWord = game.selectedWord;
               game.lossWords.push(lostWord);
               game.lossWords.forEach(function(element) {console.log("Word lost: " + element)});
+              game.renderStats();
 
               // Prompt user to play again, or not, and call appropriate function
               var replay = confirm("Your watch has ended! \n Play again?");
-                if (replay) { game.startRound(); }
-                else { game.summarizeGame(); }
+                if (replay) 
+                  { 
+                    game.startRound(); 
+                    game.renderStats();
+                  }
+                else 
+                {
+                   game.renderStats();
+                   game.summarizeGame();
+                }
             }
       }
     } // close IF INCORRECT block
