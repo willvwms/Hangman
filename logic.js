@@ -30,30 +30,37 @@ function Game () {
   this.allWrongGuesses = [];
   // An array to track all the letters correctly guessed on rounds the user loses
   this.allCorrectGuesses = [];
-  
+
+  // Two items needed for generating the keyboard:
+  this.nodelist = document.getElementsByClassName("letter-button");
+  this.buttons = Array.prototype.slice.call( this.nodelist );
+
 // ----------------------------------------------------------------------------------------------
 // METHODS - functions to control game play 
 // ----------------------------------------------------------------------------------------------
 
-// Note that "orientationchange" and screen.orientation are unprefixed in the following
-// code although this API is still vendor-prefixed browsers implementing it.
-window.addEventListener("orientationchange", function() {
+// Three methods to generate a keyboard (mainly for use on mobile)
 
-  // console.log("the orientation of the device is now " + screen.orientation.angle);
+// First, naming a method to dynamically generate letter buttons; this method will be called by name, rather than using an anonymous function
+// (this will be called from the MAIN PROCESS section: e.g., this.actionableguesses.forEach( *call method here* )
+this.generateButtons = value => { 
+  const letterButton = `<button class="letter-button" class="out" id="${value}" > <span class="character" > ${value}  </span> </button>`;
+  document.getElementById("keyboard").innerHTML += letterButton; 
+}
+// Second, naming/defining a method here to attach click handlers to each letter button
+this.readLetter = event => { 
+  console.log(`Clicked ${event.target.innerText} `);
+  document.getElementById("clicked").innerHTML += `<span> ${event.target.innerText} </span>`
+}
 
-  if (window.matchMedia("(orientation: portrait)").matches) {
-    document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-photos/square/square-${this.wrongGuesses.length}.png)`;
-    // document.getElementById("hangman-image").src=`assets/hangman-photos/square/square-${this.wrongGuesses.length}.png`;
-  }
+// Third, a method to serially attach click handlers, defined above, to each letter button
+this.attachHandler = item => {item.addEventListener("click", this.readLetter ); }
+// Finally, a method to call to execute the attachHandler method
+this.processHandlers = buttonArray => { buttonArray.forEach( this.attachHandler ); }
 
-  if (window.matchMedia("(orientation: landscape)").matches) {
-    document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-photos/landscape/landscape-${this.wrongGuesses.length}.png)`;
-    // document.getElementById("hangman-image").src=`assets/hangman-photos/landscape/landscape-${this.wrongGuesses.length}.png`;
-  }
+// this.actionableGuesses.forEach( this.generateButtons );
 
-});
-
-  this.updateHangmanImage = number => {
+this.updateHangmanImage = number => {
     if (window.innerHeight > window.innerWidth) {
       document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-photos/square/square-${number}.png)`;
       // document.getElementById("hangman-image").src=`assets/hangman-photos/square/square-${number}.png`;
@@ -314,11 +321,36 @@ var game = new Game ();
 
 game.wordList.forEach(game.loadWordIndices, game);
 
+// Generate keyboard:
+
+game.generateButtons();
+game.processHandlers(game.buttons);
+
 // Start the first round:
 game.startRound();
 game.renderStats();
 
-// Event listener game loop:
+
+// EVENT LISTENER: Device orientation (selects correct path for vertical/portrait photo assets)
+// Note that "orientationchange" and screen.orientation are unprefixed in the following
+// code although this API is still vendor-prefixed browsers implementing it.
+window.addEventListener("orientationchange", function() {
+
+  // console.log("the orientation of the device is now " + screen.orientation.angle);
+
+  if (window.matchMedia("(orientation: portrait)").matches) {
+    document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-photos/square/square-${this.wrongGuesses.length}.png)`;
+    // document.getElementById("hangman-image").src=`assets/hangman-photos/square/square-${this.wrongGuesses.length}.png`;
+  }
+
+  if (window.matchMedia("(orientation: landscape)").matches) {
+    document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-photos/landscape/landscape-${this.wrongGuesses.length}.png)`;
+    // document.getElementById("hangman-image").src=`assets/hangman-photos/landscape/landscape-${this.wrongGuesses.length}.png`;
+  }
+
+}); // closes orientation change (window) event listener
+
+// EVENT LISTENER: User input (BASIC GAME ENGINE)
 document.onkeyup = function(event) {
     // store user's input in variable 'letter', make it lower case for consistentcy, and log it:
     var letter = String.fromCharCode(event.keyCode).toUpperCase();
