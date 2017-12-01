@@ -1,0 +1,118 @@
+@font-face {
+    font-family: Thrones;
+    src: url('assets/thrones.ttf') format("truetype");
+}
+
+body {
+	font-family: Thrones;
+}
+
+#container {
+	background-color: black;
+	display: flex;
+	height: 60%;
+	width: 50vw;
+	font-family: inherit;
+}
+
+#keyboard {
+	margin: auto;
+	display: flex;
+	flex-wrap: wrap;
+	width: 50%;
+	height: 50%;
+	background-color: black;
+	border: 1vmin solid white;
+	border-radius: 1vmax;
+	font-family: inherit;
+}
+
+.letter-button {
+	margin: auto;
+	text-align: center;
+	border: .5vmin solid white;
+	border-radius: 1vmax;
+	color: white;
+	font-size: 2vmax;
+	height: 5vmax;
+	width: 5vmax;
+	background-color: black;
+	line-height: 100%;
+	transition: transform 150ms;
+	font-family: inherit;
+	}
+
+.character {
+	position: relative;
+	top: 30%;
+	font-family: inherit;
+}
+
+/* PSEUDO-SELECTORS*/
+
+
+.letter-button:hover {
+	cursor: pointer;	
+	transform: scale(1.2); 
+	background-color: white;
+	font-weight: bolder;
+	color: black;
+}
+
+/*:disabled {
+	background-color: gray;
+	border: none;
+	filter: blur(1px);
+}
+
+
+:disabled:hover {
+	border: none;
+	filter: blur(1px);
+	color: white;
+	border: none;
+	background-color: gray;	
+}
+*/
+.notransition {
+	-webkit-transition: none !important;
+	-moz-transition: none !important;
+	-o-transition: none !important;
+	transform: none !important;
+	border: none;
+	color: white;
+	background-color: gray;	
+	font-weight: normal;
+}
+  
+/* ----------- iPhone 5, 5S, 5C and 5SE ----------- */
+
+/* Portrait and Landscape */
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+
+p {
+	width: 14.5vw;
+	height: 14.5vw;
+}
+
+}
+
+/* Portrait */
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: portrait) {
+}
+
+/* Landscape */
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: landscape) {
+
+}

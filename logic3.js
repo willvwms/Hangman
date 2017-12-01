@@ -47,13 +47,10 @@ this.generateButtons = value => {
 this.readLetter = event => { 
   console.log(`Clicked ${event.target.innerText} `);
   document.getElementById("clicked").innerHTML += `<span> ${event.target.innerText} </span>`
-      if(event.keyCode == 13){
-        $("#submit-button").click();
-    }
 }
 
 // Third, a method to serially attach click handlers, defined above, to each letter button
-this.attachHandler = item => {item.addEventListener("click", this.readLetter ); }
+this.attachHandler = item => {item.addEventListener("click", this.handle ); }
 // Finally, a method to call to execute the attachHandler method
 this.processHandlers = buttonArray => { buttonArray.forEach( this.attachHandler ); }
 
@@ -304,68 +301,7 @@ function renderWinWordsToScreen (element) {
 //   // $("#background-image").css( "background-image", `url(assets/${number}.png)` );
 // }
 
-// ----------------------------------------------------------------------------------------------
-// MAIN PROCESS 
-// ----------------------------------------------------------------------------------------------
-
-// Instantiate the Game object
-var game = new Game ();
-
-// Load word indices (make entire word list available)
-// NOTE: two arguments need to be passed to the forEach array method here:
-// 1st ARGUMENT: Callback function -- game.loadWordIndices -- define method of the Game prototype
-// and then, because the underlying method/function definition uses "this" keyword, 
-// a second argument ("thisArg") is required as a reference object (otherwise, the method's return value will be undefined)
-// 2nd ARGUMENT: "thisArg" -- game -- the specific instantiation of the Game prototype whose data needs to be changed
-
-game.wordList.forEach(game.loadWordIndices, game);
-
-// Generate keyboard:
-
-game.actionableGuesses.forEach(game.generateButtons);
-
-// Two items needed for generating the keyboard:
-game.nodelist = document.getElementsByClassName("letter-button");
-game.buttons = Array.prototype.slice.call( game.nodelist );
-game.processHandlers(game.buttons, game);
-
-
-// var nodelist = document.getElementsByClassName("letter-button");
-// var buttons = Array.prototype.slice.call( nodelist )
-// // Finally, call the previously defined functions to attach the click handlers to each button:
-// console.log(buttons);
-// buttons.forEach( game.attachHandler );
-
-// Start the first round:
-game.startRound();
-game.renderStats();
-
-
-// EVENT LISTENER: Device orientation (selects correct path for vertical/portrait photo assets)
-// Note that "orientationchange" and screen.orientation are unprefixed in the following
-// code although this API is still vendor-prefixed browsers implementing it.
-window.addEventListener("orientationchange", function() {
-
-  // console.log("the orientation of the device is now " + screen.orientation.angle);
-
-  if (window.matchMedia("(orientation: portrait)").matches) {
-    document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-photos/square/square-${this.wrongGuesses.length}.png)`;
-    // document.getElementById("hangman-image").src=`assets/hangman-photos/square/square-${this.wrongGuesses.length}.png`;
-  }
-
-  if (window.matchMedia("(orientation: landscape)").matches) {
-    document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-photos/landscape/landscape-${this.wrongGuesses.length}.png)`;
-    // document.getElementById("hangman-image").src=`assets/hangman-photos/landscape/landscape-${this.wrongGuesses.length}.png`;
-  }
-
-}); // closes orientation change (window) event listener
-
-// EVENT LISTENER: UI KEYBOARD INPUT (should call next event listener)
-
-  // NEED CODE TO TRIGGER KEYBOARD LISTENER HERE
-
-// EVENT LISTENER: PYSICAL KEYBOARD INPUT (BASIC GAME ENGINE)
-document.onkeyup = function(event) {
+this.handleInput = event => {
     // store user's input in variable 'letter', make it lower case for consistentcy, and log it:
     var letter = String.fromCharCode(event.keyCode).toUpperCase();
     // console.log(letter);
@@ -469,11 +405,66 @@ document.onkeyup = function(event) {
       }
     } // close IF INCORRECT block
 
-}; // Closes EVENT LISTENER
+}; // Closes handleInput method (MAIN EVENT LISTENER)
 
-// Click for 'Enter' if pressed while text area has focus
-$("#text-input-area").keyup(function(event){
-    if(event.keyCode == 13){
-        $("#submit-button").click();
-    }
-}); // close keyup handler
+// ----------------------------------------------------------------------------------------------
+// MAIN PROCESS 
+// ----------------------------------------------------------------------------------------------
+
+// Instantiate the Game object
+var game = new Game ();
+
+// Load word indices (make entire word list available)
+// NOTE: two arguments need to be passed to the forEach array method here:
+// 1st ARGUMENT: Callback function -- game.loadWordIndices -- define method of the Game prototype
+// and then, because the underlying method/function definition uses "this" keyword, 
+// a second argument ("thisArg") is required as a reference object (otherwise, the method's return value will be undefined)
+// 2nd ARGUMENT: "thisArg" -- game -- the specific instantiation of the Game prototype whose data needs to be changed
+
+game.wordList.forEach(game.loadWordIndices, game);
+
+// Generate keyboard:
+
+game.actionableGuesses.forEach(game.generateButtons);
+
+// Two items needed for generating the keyboard:
+game.nodelist = document.getElementsByClassName("letter-button");
+game.buttons = Array.prototype.slice.call( game.nodelist );
+game.processHandlers(game.buttons, game);
+
+
+// var nodelist = document.getElementsByClassName("letter-button");
+// var buttons = Array.prototype.slice.call( nodelist )
+// // Finally, call the previously defined functions to attach the click handlers to each button:
+// console.log(buttons);
+// buttons.forEach( game.attachHandler );
+
+// Start the first round:
+game.startRound();
+game.renderStats();
+
+
+// EVENT LISTENER: Device orientation (selects correct path for vertical/portrait photo assets)
+// Note that "orientationchange" and screen.orientation are unprefixed in the following
+// code although this API is still vendor-prefixed browsers implementing it.
+window.addEventListener("orientationchange", function() {
+
+  // console.log("the orientation of the device is now " + screen.orientation.angle);
+
+  if (window.matchMedia("(orientation: portrait)").matches) {
+    document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-photos/square/square-${this.wrongGuesses.length}.png)`;
+    // document.getElementById("hangman-image").src=`assets/hangman-photos/square/square-${this.wrongGuesses.length}.png`;
+  }
+
+  if (window.matchMedia("(orientation: landscape)").matches) {
+    document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-photos/landscape/landscape-${this.wrongGuesses.length}.png)`;
+    // document.getElementById("hangman-image").src=`assets/hangman-photos/landscape/landscape-${this.wrongGuesses.length}.png`;
+  }
+
+}); // closes orientation change (window) event listener
+
+// EVENT LISTENER: UI KEYBOARD INPUT (should call next event listener)
+
+// EVENT LISTENER: PYSICAL KEYBOARD INPUT (BASIC GAME ENGINE)
+document.onkeyup = game.handleInput; 
+

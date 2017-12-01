@@ -17,19 +17,12 @@
 <!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
  -->
 <link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/keyboard-css.css">
 
     
     <title>Hangman: Game of Thrones</title>
 </head>
 <body id="hangman-image">
-
-<div id="container">
-  <div id="keyboard">
-        
-  </div> <!-- #keyboard-container -->
-</div> <!-- #container -->  
-
-<div>Clicked: <h1 id="clicked"></h1></div>
 
 
   <div class="box" id="grid-container">
@@ -46,20 +39,28 @@
           <span id="symbol-string"></span>
         </div>
 
-        <div class="box" id="hangman-image-box">
-<!--           <h3>Hangman Image</h3> -->
-          <!-- <img id="hangman-image" src=""></div> -->
-        </div>  
+<!--         <div class="box" id="hangman-image-box">
+          <h3>Hangman Image</h3>
+          <img id="hangman-image" src=""></div>
+        </div>   -->
 
               <div class="box">
           <h3>Word to Guess</h3>
           <span id="word-to-guess"></span>
         </div>
 
+<div>Clicked: <h1 id="clicked"></h1></div>
+
         <div class="box">
           <h3>Wrong Guesses</h3>
           <span id="wrong-guesses"></span>
         </div>  
+
+<div id="container">
+  <div id="keyboard">
+        
+  </div> <!-- #keyboard-container -->
+</div> <!-- #container -->  
 
         <div class="box">
           <h3>Chances Left</h3>
@@ -94,7 +95,7 @@
   </div> <!-- closes #grid-container -->
 
 <!-- Link to JavaScript -->
-<script src="logic.js"></script>
-
+<!-- <script src="logic.js"></script> -->
+<script src="logic3.js"></script>
 </body>
 </html>
