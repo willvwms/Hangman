@@ -1,0 +1,80 @@
+@font-face {
+    font-family: Thrones;
+    src: url('thrones.ttf') format("truetype");
+}
+
+body {
+
+	/*Establish font (face and color) to be inherited by child elements*/
+	font-family: Thrones;
+	color: white;
+	font-size: 2rem;
+
+	/*To display the background image (hangman images) in landscape with vertical centering:*/
+	height:100vh;	
+	background-image: url('hangman-photos/landscape/landscape-0.png');
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-color: black;
+
+	/*To give the appearance of cross-dissolving each successive hangman image:*/
+    -webkit-transition-property: background-image; /* Safari */
+    -webkit-transition-duration: 2.5s; /* Safari */
+    transition-property: background-image;
+    transition-duration: 2.5s;
+
+	/*To display the grid container div evenly:*/
+    display: flex;
+}
+
+#grid-container {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (5fr)[6];
+      grid-template-columns: repeat(2, 1fr);
+  grid-gap: 1.5vw;
+  height: 100%;
+  width: 80vw;
+  margin: auto;
+  padding: 10px;
+
+}
+
+.box {
+	border: .5vmin solid white;
+	border-radius: 1vmax;
+}
+
+#hangman-image-box {
+	width: 25vw;
+	height: 25vw;
+}
+
+/*#hangman-image {
+	background-image: url();
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 25vw;
+}
+*/
+
+
+
+
+
+/* for all screens */
+
+
+/*#portrait-message {display: none;}
+*/
+
+/* only when orientation is in portrait mode */
+
+/*@media all and (orientation:portrait) {
+    #portrait-message {
+    	display: block;
+    	z-index: 99;
+    }
+}
+*/

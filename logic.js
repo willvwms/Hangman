@@ -7,10 +7,10 @@ function Game () {
   // Constants to hold game data
   this.wordList = ["DIREWOLF", "GUEST  RIGHT", "HARRENHAL", "IRON  PRICE", "KHALEESI", "LORD  OF  LIGHT", "UNSULLIED", "WHITE  WALKERS", "THE  WALL", "KINGS  LANDING", "BRAAVOS", "DORNE", "WESTEROS", "WINTERFELL", "RIVERRUN", "RED  WEDDING", "HOUSE  TYRELL", "HOUSE  STARK", "HOUSE  LANNISTER", "HOUSE  GREYJOY", "HOUSE  FREY", "HOUSE  BOLTON", "HOUSE  BARATHEON", "HOUSE  ARRYN", "HOUSE  MARTELL", "HOUSE  TARGARYEN", "HOUSE  TULLY", "SEVEN  KINGDOMS", "FREE  CITIES", "IRONBORN", "DROWNED  GOD", "DRAGONSTONE ", "CASTERLY  ROCK", "HIGHGARDEN", "RED  KEEP", "STORMS  END", "THE  EYRIE", "STORMLANDS", "THE  REACH", "THE  WESTERLANDS", "THE  NORTH", "IRON  ISLANDS", "THE  VALE", "ESSOS", "KINGSLAYER", "WILDLING", "MAD  KING", "THE  SEVEN", "DOTHRAKI ", "GREENSIGHT", "THE  OTHERS", "GODSWOOD", "CASTLE  BLACK", "ARMY  OF  THE  DEAD", "UNBOWED  UNBENT  UNBROKEN", "WINTER  IS  COMING", "FIRE  AND  BLOOD", "MAESTER", "MILK  OF  THE  POPPY", "PYROMANCER", "WILDFIRE", "WILDLING", "THE  LONG  NIGHT", "OLDTOWN", "THE  CITADEL", "HIGHTOWER", "SEPTON"];
   this.unusedIndices = []; // as words are selected from the wordList array, their index is removed from this list as a possible option for selection;
-  this.symbol = "_ ";
+  this.symbol = "▢";
   this.symbolArray = [];
   this.symbolString = "";
-  this.maxGuesses = 10;
+  this.maxGuesses = 7;
   this.actionableGuesses = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
   // Variables to hold round-specific data
@@ -35,17 +35,36 @@ function Game () {
 // METHODS - functions to control game play 
 // ----------------------------------------------------------------------------------------------
 
-// Methods for distilling all possible letters in each round for end-of-game statistics
+// Note that "orientationchange" and screen.orientation are unprefixed in the following
+// code although this API is still vendor-prefixed browsers implementing it.
+window.addEventListener("orientationchange", function() {
 
-  // this.stripSpaces = function (value) {
-  //   return value !== " ";
-  //   // if (value !== " ") 
-  //   //   { return value }
-  // }
+  // console.log("the orientation of the device is now " + screen.orientation.angle);
 
-  // this.onlyUnique = function (value, index, self) {
-  //   return self.indexOf(value) === index;
-  // }
+  if (window.matchMedia("(orientation: portrait)").matches) {
+    document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-photos/square/square-${this.wrongGuesses.length}.png)`;
+    // document.getElementById("hangman-image").src=`assets/hangman-photos/square/square-${this.wrongGuesses.length}.png`;
+  }
+
+  if (window.matchMedia("(orientation: landscape)").matches) {
+    document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-photos/landscape/landscape-${this.wrongGuesses.length}.png)`;
+    // document.getElementById("hangman-image").src=`assets/hangman-photos/landscape/landscape-${this.wrongGuesses.length}.png`;
+  }
+
+});
+
+  this.updateHangmanImage = number => {
+    if (window.innerHeight > window.innerWidth) {
+      document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-photos/square/square-${number}.png)`;
+      // document.getElementById("hangman-image").src=`assets/hangman-photos/square/square-${number}.png`;
+    }
+    else {
+      document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-photos/landscape/landscape-${this.wrongGuesses.length}.png)`;
+      // document.getElementById("hangman-image").src=`assets/hangman-photos/landscape/landscape-${this.wrongGuesses.length}.png`;
+    }
+    // document.getElementById("hangman-image").style.backgroundImage=`url(assets/hangman-images/Square-Generic-${number}.png)`;
+  // $("#background-image").css( "background-image", `url(assets/${number}.png)` );
+}
 
   this.filterLetters = function (wordOrPhrase) {
 
@@ -145,7 +164,7 @@ function Game () {
     for (i = 0; i < word.length; i++) {
         if (word[i] === " ") 
         {
-            this.symbolArray.push(" ");
+            this.symbolArray.push("    ");
         }
         else 
         {
@@ -204,11 +223,12 @@ function Game () {
     $("#win-words").empty();
     this.winWords.forEach(renderWinWordsToScreen);
     $("#loss-count").html(this.lossCount);
-    $("#loss-words").empty();
+    // $("#loss-words").empty();
+    document.getElementById("loss-words").innerHTML = null;
     this.lossWords.forEach(renderLossWordsToScreen);
-    updateHangmanImage(this.wrongGuesses.length);
+    this.updateHangmanImage(this.wrongGuesses.length);
     $("#summary-message").hide();
-    // $("#summary-data").hide();
+    $("#summary-data").hide();
   }; // close renderStats method 
 
   this.summarizeGame = function () {
@@ -255,8 +275,9 @@ function Game () {
 
 // Some named functions to be called by (callbacks passed to) forEach / filter / map / reduce methods (use case: game stats)
 
-function renderLossWordsToScreen (element) {
-  $("#loss-words").append(element + "<br>");
+const renderLossWordsToScreen = element => {
+  // $("#loss-words").append(element + "<br>");
+  document.getElementById("loss-words").innerHTML += `${element} <br>`;
 }
 
 function renderWinWordsToScreen (element) {
@@ -272,9 +293,10 @@ function renderWinWordsToScreen (element) {
   }
 }
 
-function updateHangmanImage(number) {
-  $("#stage-image").attr( "src", `assets/hangman-images/${number}.jpg` );
-}
+// function updateHangmanImage(number) {
+//   document.getElementById("background-image").style.backgroundImage=`url(assets/${number}.png)`;
+//   // $("#background-image").css( "background-image", `url(assets/${number}.png)` );
+// }
 
 // ----------------------------------------------------------------------------------------------
 // MAIN PROCESS 
