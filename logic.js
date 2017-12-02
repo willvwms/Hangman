@@ -46,10 +46,11 @@ this.generateButtons = value => {
 // Second, naming/defining a method here to attach click handlers to each letter button
 this.readLetter = event => { 
   console.log(`Clicked ${event.target.innerText} `);
-  document.getElementById("clicked").innerHTML += `<span> ${event.target.innerText} </span>`
-      if(event.keyCode == 13){
-        $("#submit-button").click();
-    }
+
+  document.getElementById("clicked").innerHTML += `<span> ${event.target.innerText} </span>`;
+    //   if(event.keyCode == 13){
+    //     $("#submit-button").click();
+    // }
 }
 
 // Third, a method to serially attach click handlers, defined above, to each letter button
@@ -327,8 +328,8 @@ game.actionableGuesses.forEach(game.generateButtons);
 // Two items needed for generating the keyboard:
 game.nodelist = document.getElementsByClassName("letter-button");
 game.buttons = Array.prototype.slice.call( game.nodelist );
-game.processHandlers(game.buttons, game);
 
+// game.processHandlers(game.buttons, game);
 
 // var nodelist = document.getElementsByClassName("letter-button");
 // var buttons = Array.prototype.slice.call( nodelist )
@@ -360,15 +361,7 @@ window.addEventListener("orientationchange", function() {
 
 }); // closes orientation change (window) event listener
 
-// EVENT LISTENER: UI KEYBOARD INPUT (should call next event listener)
-
-  // NEED CODE TO TRIGGER KEYBOARD LISTENER HERE
-
-// EVENT LISTENER: PYSICAL KEYBOARD INPUT (BASIC GAME ENGINE)
-document.onkeyup = function(event) {
-    // store user's input in variable 'letter', make it lower case for consistentcy, and log it:
-    var letter = String.fromCharCode(event.keyCode).toUpperCase();
-    // console.log(letter);
+const handleInput = letter => {
 
     // Filter out non-alphabetic input
     if (game.actionableGuesses.indexOf(letter) < 0)
@@ -469,11 +462,22 @@ document.onkeyup = function(event) {
       }
     } // close IF INCORRECT block
 
-}; // Closes EVENT LISTENER
+}; // Closes handleInput
 
-// Click for 'Enter' if pressed while text area has focus
-$("#text-input-area").keyup(function(event){
-    if(event.keyCode == 13){
-        $("#submit-button").click();
-    }
-}); // close keyup handler
+
+
+// KEYBOARD HANDLER (physical letter input)
+document.onkeyup = function(event) {
+  // store user's input in variable 'letter', make it lower case for consistentcy, and log it:
+  letter = String.fromCharCode(event.keyCode).toUpperCase();
+  handleInput(letter);
+} // close keyboard handler
+
+// CLICK HANDLER (UI letter input)
+game.buttons.forEach(function(item, index) {item.addEventListener("click",function(event){
+  console.log(event.target.innerText);
+  letter = event.target.innerText;
+  handleInput(letter);
+})}) // close click handler
+
+ 
